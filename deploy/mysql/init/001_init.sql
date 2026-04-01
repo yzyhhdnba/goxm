@@ -1,0 +1,7 @@
+CREATE DATABASE IF NOT EXISTS pilipili_go
+  DEFAULT CHARACTER SET utf8mb4
+  DEFAULT COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'pilipili'@'%' IDENTIFIED BY 'pilipili';
+GRANT ALL PRIVILEGES ON pilipili_go.* TO 'pilipili'@'%';
+FLUSH PRIVILEGES;

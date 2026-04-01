@@ -1,0 +1,22 @@
+.DS_Store
+.idea/
+.vscode/
+
+# Root logs
+*.log
+
+# Frontend dependencies and build outputs
+frontend/node_modules/
+frontend/dist/
+backend/frontend/node_modules/
+backend/frontend/dist/
+
+# Backend local artifacts
+backend/bin/
+backend/storage/
+backend/configs/config.yaml
+
+# Common local env files
+.env
+.env.local
+.env.*.local
