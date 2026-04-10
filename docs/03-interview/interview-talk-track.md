@@ -1,6 +1,6 @@
 # PILIPILI Go 面试讲解顺序
 
-这份文档是 [KEY_CODE_IMPLEMENTATION.md](./KEY_CODE_IMPLEMENTATION.md) 的配套讲解稿，目标不是“把所有代码讲一遍”，而是帮助你在面试里按时间长短稳定输出。
+这份文档是 [key-code-implementation.md](../02-development/key-code-implementation.md) 的配套讲解稿，目标不是“把所有代码讲一遍”，而是帮助你在面试里按时间长短稳定输出。
 
 适用场景：
 
@@ -414,5 +414,5 @@
 
 配套阅读：
 
-- 简历项目描述与标准回答：[RESUME_PROJECT_WRITEUP_AND_QA.md](./RESUME_PROJECT_WRITEUP_AND_QA.md)
-- 关键代码走读：[KEY_CODE_IMPLEMENTATION.md](./KEY_CODE_IMPLEMENTATION.md)
+- 简历项目描述与标准回答：[resume-project-writeup-and-qa.md](./resume-project-writeup-and-qa.md)
+- 关键代码走读：[key-code-implementation.md](../02-development/key-code-implementation.md)

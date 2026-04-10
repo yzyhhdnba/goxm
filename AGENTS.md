@@ -36,6 +36,8 @@
 - 已经接入主程序优雅停机
 - 已经接入开发期 CORS 中间件
 - 已经把原有前端迁入当前工作区，并在 `frontend/src/api/index.ts` 收口核心 API
+- 当前工作区已经初始化为根级 Git 仓库
+- 仓库里仍保留 `backend/frontend/` 历史副本，当前主前端目录以根目录 `frontend/` 为准
 - 当前前端构建在本机 Node 环境下需要 `NODE_OPTIONS=--openssl-legacy-provider`
 
 任何代理或协作者都 **不得** 在未实现前把功能描述为“已完成”，但已经验证通过的基础骨架能力可以如实说明。
@@ -71,9 +73,9 @@
 开始任何实质性工作前，请按以下顺序阅读：
 
 1. [README.md](/Users/hhd/Desktop/test/goxm/README.md)
-2. [PILIPILI_GO_BLUEPRINT.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_BLUEPRINT.md)
-3. [PILIPILI_GO_SCHEMA.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_SCHEMA.md)
-4. [PILIPILI_GO_API.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_API.md)
+2. [blueprint.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/blueprint.md)
+3. [schema.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/schema.md)
+4. [api.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/api.md)
 5. [AGENTS.md](/Users/hhd/Desktop/test/goxm/AGENTS.md)
 
 如果代码和文档未来出现冲突，优先处理方式不是擅自重写文档，而是：
@@ -260,6 +262,12 @@ backend/
 
 代理在新增代码或文档时，应尽量向这个结构收敛，而不是随意分散。
 
+补充约束：
+
+- 当前前端源码、环境变量与联调改动，默认优先落在根目录 `frontend/`
+- `backend/frontend/` 当前视为历史遗留副本；若无用户明确要求，不要继续把新增改动写进该目录
+- `backend/storage/`、`backend/bin/`、`backend/configs/config.yaml` 属于本地运行产物或本地配置，不要把这些内容表述成仓库契约
+
 ---
 
 ## 9. 领域边界约束
@@ -331,9 +339,9 @@ backend/
 
 当前阶段的设计约束主要来自这三份文档：
 
-- [PILIPILI_GO_BLUEPRINT.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_BLUEPRINT.md)
-- [PILIPILI_GO_SCHEMA.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_SCHEMA.md)
-- [PILIPILI_GO_API.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_API.md)
+- [blueprint.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/blueprint.md)
+- [schema.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/schema.md)
+- [api.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/api.md)
 
 代理必须遵守以下规则：
 
@@ -412,8 +420,8 @@ backend/
 - 先搭主链路，再做增强能力
 - 优先完成鉴权、首页、详情、评论、点赞、关注
 - 不要在没有 MVP 的情况下先做复杂热榜和事件系统
-- 接口命名尽量向 `PILIPILI_GO_API.md` 收敛
-- 模型命名尽量向 `PILIPILI_GO_SCHEMA.md` 收敛
+- 接口命名尽量向 `docs/01-contracts/api.md` 收敛
+- 模型命名尽量向 `docs/01-contracts/schema.md` 收敛
 - 若实现细节与文档不完全一致，优先补充说明，不要偷偷偏移
 
 ---

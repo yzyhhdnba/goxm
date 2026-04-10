@@ -244,19 +244,20 @@
 
 当前仓库的核心文档如下：
 
-- 总体蓝图：[PILIPILI_GO_BLUEPRINT.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_BLUEPRINT.md)
-- 表结构草案：[PILIPILI_GO_SCHEMA.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_SCHEMA.md)
-- API 清单：[PILIPILI_GO_API.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_API.md)
-- 任务拆解：[docs/TASKS.md](/Users/hhd/Desktop/test/goxm/docs/TASKS.md)
+- 文档总览：[docs/README.md](/Users/hhd/Desktop/test/goxm/docs/README.md)
+- 总体蓝图：[blueprint.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/blueprint.md)
+- 表结构草案：[schema.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/schema.md)
+- API 清单：[api.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/api.md)
+- 任务拆解：[task-breakdown.md](/Users/hhd/Desktop/test/goxm/docs/02-development/task-breakdown.md)
 - 协作约束：[AGENTS.md](/Users/hhd/Desktop/test/goxm/AGENTS.md)
 
 建议阅读顺序：
 
 1. `README.md`
-2. `PILIPILI_GO_BLUEPRINT.md`
-3. `PILIPILI_GO_SCHEMA.md`
-4. `PILIPILI_GO_API.md`
-5. `docs/TASKS.md`
+2. `docs/01-contracts/blueprint.md`
+3. `docs/01-contracts/schema.md`
+4. `docs/01-contracts/api.md`
+5. `docs/02-development/task-breakdown.md`
 6. `AGENTS.md`
 
 ---
@@ -347,8 +348,9 @@ pilipili-go/
 - `backend/`：新增 Go 后端
 - `deploy/`：部署脚本、Compose、环境样例
 - `docs/`：后续可以沉淀架构图、流程图和接口说明
+- `backend/frontend/`：当前仍保留历史副本，后续联调与新增改动默认以根目录 `frontend/` 为准
 
-当前工作区已经具备 `backend/`、根目录 `docker-compose.yml` 和 MySQL 初始化脚本，但 `frontend/` 迁入和更多业务模块仍待继续补齐。
+当前工作区已经具备根目录 `frontend/`、`backend/`、根目录 `docker-compose.yml` 和 MySQL 初始化脚本，后续重点是继续沿既定文档收敛业务模块与工程细节，而不是重复迁移前端目录。
 
 ---
 
@@ -451,7 +453,8 @@ pilipili-go/
 
 如果你希望直接开始实现，请优先阅读：
 
-- [PILIPILI_GO_BLUEPRINT.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_BLUEPRINT.md)
-- [PILIPILI_GO_SCHEMA.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_SCHEMA.md)
-- [PILIPILI_GO_API.md](/Users/hhd/Desktop/test/goxm/PILIPILI_GO_API.md)
-- [docs/TASKS.md](/Users/hhd/Desktop/test/goxm/docs/TASKS.md)
+- [docs/README.md](/Users/hhd/Desktop/test/goxm/docs/README.md)
+- [blueprint.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/blueprint.md)
+- [schema.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/schema.md)
+- [api.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/api.md)
+- [task-breakdown.md](/Users/hhd/Desktop/test/goxm/docs/02-development/task-breakdown.md)

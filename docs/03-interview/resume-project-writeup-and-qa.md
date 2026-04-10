@@ -12,7 +12,7 @@
 
 1. 先选一版最适合你当前投递方向的“简历描述”
 2. 再背熟“高频追问”的标准回答
-3. 最后结合 [INTERVIEW_TALK_TRACK.md](./INTERVIEW_TALK_TRACK.md) 做完整项目讲解演练
+3. 最后结合 [interview-talk-track.md](./interview-talk-track.md) 做完整项目讲解演练
 
 ---
 
@@ -638,11 +638,11 @@
 
 1. 从这份文档里选一版简历项目描述，先放进简历
 2. 背熟“项目介绍 / 登录态 / viewer_state / 评论树 / 审核事务”这五个标准回答
-3. 结合 [INTERVIEW_TALK_TRACK.md](./INTERVIEW_TALK_TRACK.md) 做 5 分钟和 15 分钟版本口述练习
-4. 打开 [KEY_CODE_IMPLEMENTATION.md](./KEY_CODE_IMPLEMENTATION.md) 对照代码走一遍，保证每个回答都能落到实现
+3. 结合 [interview-talk-track.md](./interview-talk-track.md) 做 5 分钟和 15 分钟版本口述练习
+4. 打开 [key-code-implementation.md](../02-development/key-code-implementation.md) 对照代码走一遍，保证每个回答都能落到实现
 5. 准备 3 个不足点和 3 个演进方向，面试时一定会非常加分
 
 配套文档：
 
-- 项目讲解顺序：[INTERVIEW_TALK_TRACK.md](./INTERVIEW_TALK_TRACK.md)
-- 关键代码走读：[KEY_CODE_IMPLEMENTATION.md](./KEY_CODE_IMPLEMENTATION.md)
+- 项目讲解顺序：[interview-talk-track.md](./interview-talk-track.md)
+- 关键代码走读：[key-code-implementation.md](../02-development/key-code-implementation.md)

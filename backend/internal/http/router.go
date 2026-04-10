@@ -28,7 +28,7 @@ import (
 )
 
 // NewRouter 把依赖组装、中间件分层和路由注册收口到一个入口。
-// 对应文档《KEY_CODE_IMPLEMENTATION.md》中的“路由装配与中间件分层”。
+// 对应文档《key-code-implementation.md》中的“路由装配与中间件分层”。
 func NewRouter(cfg *appconfig.Config, gormDB *gorm.DB, redisClient *appredis.Client) *gin.Engine {
 	gin.SetMode(cfg.Server.Mode)
 

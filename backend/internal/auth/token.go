@@ -45,7 +45,7 @@ func NewTokenManager(cfg appconfig.JWTConfig) *TokenManager {
 }
 
 // IssueTokenPair 是双 Token 会话模型的核心入口。
-// 对应文档《KEY_CODE_IMPLEMENTATION.md》中的“JWT 登录态、双 Token 和无感刷新”。
+// 对应文档《key-code-implementation.md》中的“JWT 登录态、双 Token 和无感刷新”。
 func (m *TokenManager) IssueTokenPair(userID uint64, tokenVersion uint) (TokenPair, string, error) {
 	now := time.Now()
 	refreshID, err := randomID()

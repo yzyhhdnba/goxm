@@ -1016,8 +1016,8 @@ backend/
 
 推荐下一步优先产出：
 
-- `PILIPILI_GO_SCHEMA.md`
-- `PILIPILI_GO_API.md`
+- `docs/01-contracts/schema.md`
+- `docs/01-contracts/api.md`
 - `backend/` 初始化脚手架
 
 这样我们就能从“规划”进入“真正开工”。

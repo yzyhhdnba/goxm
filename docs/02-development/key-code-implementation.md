@@ -177,8 +177,8 @@ sequenceDiagram
 
 ## 面试配套
 
-- 项目讲解顺序：[INTERVIEW_TALK_TRACK.md](./INTERVIEW_TALK_TRACK.md)
-- 简历项目描述与标准回答：[RESUME_PROJECT_WRITEUP_AND_QA.md](./RESUME_PROJECT_WRITEUP_AND_QA.md)
+- 项目讲解顺序：[interview-talk-track.md](../03-interview/interview-talk-track.md)
+- 简历项目描述与标准回答：[resume-project-writeup-and-qa.md](../03-interview/resume-project-writeup-and-qa.md)
 
 ## 一、最值得优先看的文件
 

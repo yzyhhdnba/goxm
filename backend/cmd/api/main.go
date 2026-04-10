@@ -24,7 +24,7 @@ import (
 	"pilipili-go/backend/internal/video"
 )
 
-// main 是后端启动总入口，对应文档《KEY_CODE_IMPLEMENTATION.md》中的“程序入口与生命周期管理”。
+// main 是后端启动总入口，对应文档《key-code-implementation.md》中的“程序入口与生命周期管理”。
 // 走读时建议从这里顺着“配置 -> 数据库/Redis -> 路由 -> 优雅停机”这条主链路往下看。
 func main() {
 	configPath := flag.String("config", "configs/config.yaml", "path to config file")

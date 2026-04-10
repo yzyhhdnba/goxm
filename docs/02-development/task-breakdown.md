@@ -21,8 +21,8 @@
 建议按下面顺序使用本文件：
 
 1. 先读 `README.md`
-2. 再读 `PILIPILI_GO_BLUEPRINT.md`
-3. 再读 `PILIPILI_GO_SCHEMA.md` 和 `PILIPILI_GO_API.md`
+2. 再读 `docs/01-contracts/blueprint.md`
+3. 再读 `docs/01-contracts/schema.md` 和 `docs/01-contracts/api.md`
 4. 最后按本文件逐项推进
 
 任务状态建议：
@@ -64,10 +64,10 @@
 
 - `README.md`
 - `AGENTS.md`
-- `PILIPILI_GO_BLUEPRINT.md`
-- `PILIPILI_GO_SCHEMA.md`
-- `PILIPILI_GO_API.md`
-- `docs/TASKS.md`
+- `docs/01-contracts/blueprint.md`
+- `docs/01-contracts/schema.md`
+- `docs/01-contracts/api.md`
+- `docs/02-development/task-breakdown.md`
 
 全部存在并互相不冲突
 
