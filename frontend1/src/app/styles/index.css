@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #18191C;
+  background: #F1F2F3; /* Bilibili standard light grey background */
+  font-family:
+    'PingFang SC',
+    'HarmonyOS_Regular',
+    'Helvetica Neue',
+    'Microsoft YaHei',
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  outline: none;
+}
+
+#root {
+  min-height: 100vh;
+}

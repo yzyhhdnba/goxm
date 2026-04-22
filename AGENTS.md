@@ -33,9 +33,11 @@
 - 已经完成 Phase 4 的 `search`、`history`、`creator upload`、`admin review` 主链路
 - 已经修复视频详情页评论 / 回复前端触发链路，并清理关键页面残留的老旧外部资源硬编码
 - 已经接入 Redis 客户端初始化与 `healthz` 探活
+- 已经接入视频详情与热门榜的 Redis 读缓存，并在关键写路径上做主动失效
 - 已经接入主程序优雅停机
 - 已经接入开发期 CORS 中间件
 - 已经把原有前端迁入当前工作区，并在 `frontend/src/api/index.ts` 收口核心 API
+- 已经新增根目录 `frontend1/` 作为并行 React 前端工程，用于在不替换现有 Vue 前端的前提下验证 React 技术栈重构
 - 当前工作区已经初始化为根级 Git 仓库
 - 仓库里仍保留 `backend/frontend/` 历史副本，当前主前端目录以根目录 `frontend/` 为准
 - 当前前端构建在本机 Node 环境下需要 `NODE_OPTIONS=--openssl-legacy-provider`
@@ -76,7 +78,8 @@
 2. [blueprint.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/blueprint.md)
 3. [schema.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/schema.md)
 4. [api.md](/Users/hhd/Desktop/test/goxm/docs/01-contracts/api.md)
-5. [AGENTS.md](/Users/hhd/Desktop/test/goxm/AGENTS.md)
+5. [technical-architecture.md](/Users/hhd/Desktop/test/goxm/docs/02-development/technical-architecture.md)
+6. [AGENTS.md](/Users/hhd/Desktop/test/goxm/AGENTS.md)
 
 如果代码和文档未来出现冲突，优先处理方式不是擅自重写文档，而是：
 
@@ -144,7 +147,7 @@
 
 ### 第二阶段
 
-- RabbitMQ
+- RocketMQ
 - Worker
 - ffmpeg
 - MinIO 或 OSS
@@ -166,6 +169,7 @@
 - 动态 Feed 文档统一向 cursor 分页收敛
 - 业务状态与技术软删除分离：`status + deleted_at`
 - 视频计数查询保留主表字段，但写路径目标是 Redis 优先再回刷 MySQL
+- 当前 Redis 已落地的部分是视频详情与热门榜读缓存；“写 Redis 再异步回刷 MySQL”仍属于后续增强
 - `feed/recommend` 当前只返回 `visible + approved + published_at 非空` 的公开视频
 - `feed/hot` 当前已实现，排序规则为 `hot_score desc, published_at desc, id desc`
 - `feed/following` 当前已实现，只返回当前用户已关注作者的公开视频
@@ -188,6 +192,7 @@
 - `admin/stats/today` 当前返回 `active_user_count / submitted_video_count / approved_video_count / play_count / comment_count`
 - `admin/stats/area` 当前按分区返回 `approved_count / pending_count / rejected_count / total_count`
 - 当前播放器阶段优先支持直接播放落盘的 mp4 文件，后续再升级到 ffmpeg + HLS
+- 当前 RocketMQ / Worker 仅完成配置、连通性探测与运行骨架，不要把它表述成“业务异步链路已完成”
 - `videos/:id` 当前通过软鉴权返回真实 `viewer_state`
 - 评论列表与回复列表当前使用 `page + page_size`
 - 热门榜 `next_cursor` 当前使用 `hot_score:unix_timestamp:video_id`
@@ -265,6 +270,7 @@ backend/
 补充约束：
 
 - 当前前端源码、环境变量与联调改动，默认优先落在根目录 `frontend/`
+- `frontend1/` 当前视为并行 React 前端工程，可在用户明确要求 React 重构或并行实现时继续推进
 - `backend/frontend/` 当前视为历史遗留副本；若无用户明确要求，不要继续把新增改动写进该目录
 - `backend/storage/`、`backend/bin/`、`backend/configs/config.yaml` 属于本地运行产物或本地配置，不要把这些内容表述成仓库契约
 

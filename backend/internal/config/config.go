@@ -12,6 +12,7 @@ type Config struct {
 	Server   ServerConfig   `yaml:"server"`
 	Database DatabaseConfig `yaml:"database"`
 	Redis    RedisConfig    `yaml:"redis"`
+	RocketMQ RocketMQConfig `yaml:"rocketmq"`
 	JWT      JWTConfig      `yaml:"jwt"`
 	CORS     CORSConfig     `yaml:"cors"`
 	Media    MediaConfig    `yaml:"media"`
@@ -35,6 +36,16 @@ type RedisConfig struct {
 	Addr     string `yaml:"addr"`
 	Password string `yaml:"password"`
 	DB       int    `yaml:"db"`
+}
+
+type RocketMQConfig struct {
+	Enabled             bool   `yaml:"enabled"`
+	NameServerAddr      string `yaml:"name_server_addr"`
+	Namespace           string `yaml:"namespace"`
+	TopicPrefix         string `yaml:"topic_prefix"`
+	ProducerGroup       string `yaml:"producer_group"`
+	ConsumerGroupPrefix string `yaml:"consumer_group_prefix"`
+	DialTimeoutSecond   int    `yaml:"dial_timeout_second"`
 }
 
 type JWTConfig struct {
@@ -108,6 +119,21 @@ func (c *Config) applyDefaults() {
 		c.CORS.AllowOrigins = defaultCORSOrigins()
 		c.CORS.AllowCredentials = true
 	}
+	if strings.TrimSpace(c.RocketMQ.NameServerAddr) == "" {
+		c.RocketMQ.NameServerAddr = "127.0.0.1:9876"
+	}
+	if strings.TrimSpace(c.RocketMQ.TopicPrefix) == "" {
+		c.RocketMQ.TopicPrefix = "pilipili-go"
+	}
+	if strings.TrimSpace(c.RocketMQ.ProducerGroup) == "" {
+		c.RocketMQ.ProducerGroup = "pilipili-go-api"
+	}
+	if strings.TrimSpace(c.RocketMQ.ConsumerGroupPrefix) == "" {
+		c.RocketMQ.ConsumerGroupPrefix = "pilipili-go-worker"
+	}
+	if c.RocketMQ.DialTimeoutSecond == 0 {
+		c.RocketMQ.DialTimeoutSecond = 3
+	}
 	if strings.TrimSpace(c.Media.RootDir) == "" {
 		c.Media.RootDir = "storage"
 	}
@@ -122,6 +148,14 @@ func (c *Config) validate() error {
 	}
 	if strings.TrimSpace(c.Redis.Addr) == "" {
 		return fmt.Errorf("redis.addr is required")
+	}
+	if c.RocketMQ.Enabled {
+		if strings.TrimSpace(c.RocketMQ.NameServerAddr) == "" {
+			return fmt.Errorf("rocketmq.name_server_addr is required when rocketmq.enabled=true")
+		}
+		if c.RocketMQ.DialTimeoutSecond <= 0 {
+			return fmt.Errorf("rocketmq.dial_timeout_second must be greater than 0")
+		}
 	}
 	if err := validateSecret("jwt.access_secret", c.JWT.AccessSecret); err != nil {
 		return err

@@ -50,3 +50,10 @@ func (c *Client) Close() error {
 	}
 	return c.raw.Close()
 }
+
+func (c *Client) Raw() *goredis.Client {
+	if c == nil {
+		return nil
+	}
+	return c.raw
+}

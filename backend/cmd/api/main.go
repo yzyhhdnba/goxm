@@ -18,6 +18,7 @@ import (
 	"pilipili-go/backend/internal/db"
 	"pilipili-go/backend/internal/history"
 	apphttp "pilipili-go/backend/internal/http"
+	appmq "pilipili-go/backend/internal/mq/rocketmq"
 	"pilipili-go/backend/internal/notice"
 	appredis "pilipili-go/backend/internal/redis"
 	"pilipili-go/backend/internal/social"
@@ -60,6 +61,11 @@ func main() {
 		}
 	}()
 
+	mqClient, err := appmq.New(cfg.RocketMQ)
+	if err != nil {
+		log.Fatalf("connect rocketmq: %v", err)
+	}
+
 	if err := account.NewRepository(gormDB).AutoMigrate(); err != nil {
 		log.Fatalf("auto migrate users: %v", err)
 	}
@@ -90,7 +96,7 @@ func main() {
 		log.Fatalf("seed default areas: %v", err)
 	}
 
-	router := apphttp.NewRouter(cfg, gormDB, redisClient)
+	router := apphttp.NewRouter(cfg, gormDB, redisClient, mqClient)
 	server := &http.Server{
 		Addr:              cfg.Server.Addr(),
 		Handler:           router,

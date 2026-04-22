@@ -38,6 +38,7 @@ type Service struct {
 	repo          *Repository
 	followChecker FollowChecker
 	storage       MediaStorage
+	cache         Cache
 }
 
 type FollowChecker interface {
@@ -49,11 +50,12 @@ type MediaStorage interface {
 	SaveVideoCover(videoID uint64, file *multipart.FileHeader) (media.StoredObject, error)
 }
 
-func NewService(repo *Repository, followChecker FollowChecker, storage MediaStorage) *Service {
+func NewService(repo *Repository, followChecker FollowChecker, storage MediaStorage, cache Cache) *Service {
 	return &Service{
 		repo:          repo,
 		followChecker: followChecker,
 		storage:       storage,
+		cache:         cache,
 	}
 }
 
@@ -83,14 +85,25 @@ func (s *Service) ListHot(ctx context.Context, rawCursor string, limit int) (Fee
 	}
 
 	normalizedLimit := normalizeFeedLimit(limit)
+	if s.cache != nil {
+		cached, ok, err := s.cache.GetHotFeed(ctx, rawCursor, normalizedLimit)
+		if err == nil && ok {
+			return cached, nil
+		}
+	}
+
 	rows, err := s.repo.ListHot(ctx, cursor, normalizedLimit+1)
 	if err != nil {
 		return FeedResponse{}, err
 	}
 
-	return buildFeedResponse(rows, normalizedLimit, func(last videoRow) string {
+	result := buildFeedResponse(rows, normalizedLimit, func(last videoRow) string {
 		return encodeHotCursor(last.HotScore, last.PublishedAt, last.ID)
-	}), nil
+	})
+	if s.cache != nil {
+		_ = s.cache.SetHotFeed(ctx, rawCursor, normalizedLimit, result)
+	}
+	return result, nil
 }
 
 func (s *Service) ListFollowing(ctx context.Context, userID uint64, rawCursor string, limit int) (FeedResponse, error) {
@@ -165,12 +178,22 @@ func (s *Service) ListByAuthor(ctx context.Context, authorID uint64, page int, p
 // GetDetail 是视频详情页的核心聚合入口。
 // 对应文档“视频主链路：推荐流、热门流、详情页”以及“viewer_state 链路”。
 func (s *Service) GetDetail(ctx context.Context, videoID uint64, viewerID uint64) (DetailResponse, error) {
-	row, err := s.repo.FindPublicByID(ctx, videoID)
+	base, ok, err := s.getCachedDetail(ctx, videoID)
 	if err != nil {
-		if IsNotFound(err) {
-			return DetailResponse{}, ErrVideoNotFound
+		ok = false
+	}
+	if !ok {
+		row, err := s.repo.FindPublicByID(ctx, videoID)
+		if err != nil {
+			if IsNotFound(err) {
+				return DetailResponse{}, ErrVideoNotFound
+			}
+			return DetailResponse{}, err
 		}
-		return DetailResponse{}, err
+		base = mapDetailResponse(*row)
+		if s.cache != nil {
+			_ = s.cache.SetDetail(ctx, base)
+		}
 	}
 
 	viewerState := ViewerState{}
@@ -184,8 +207,8 @@ func (s *Service) GetDetail(ctx context.Context, videoID uint64, viewerID uint64
 			return DetailResponse{}, err
 		}
 		followed := false
-		if s.followChecker != nil && viewerID != row.AuthorID {
-			followed, err = s.followChecker.IsFollowing(ctx, viewerID, row.AuthorID)
+		if s.followChecker != nil && viewerID != base.Author.ID {
+			followed, err = s.followChecker.IsFollowing(ctx, viewerID, base.Author.ID)
 			if err != nil {
 				return DetailResponse{}, err
 			}
@@ -198,26 +221,8 @@ func (s *Service) GetDetail(ctx context.Context, videoID uint64, viewerID uint64
 		}
 	}
 
-	return DetailResponse{
-		ID:              row.ID,
-		AreaID:          row.AreaID,
-		Title:           row.Title,
-		Description:     row.Description,
-		CoverURL:        row.CoverURL,
-		PlayURL:         row.PlayURL,
-		DurationSeconds: row.DurationSeconds,
-		ViewCount:       row.ViewCount,
-		CommentCount:    row.CommentCount,
-		LikeCount:       row.LikeCount,
-		FavoriteCount:   row.FavoriteCount,
-		PublishedAt:     row.PublishedAt,
-		Author: AuthorPreview{
-			ID:        row.AuthorID,
-			Username:  row.AuthorUsername,
-			AvatarURL: row.AuthorAvatarURL,
-		},
-		ViewerState: viewerState,
-	}, nil
+	base.ViewerState = viewerState
+	return base, nil
 }
 
 func (s *Service) Like(ctx context.Context, videoID uint64, userID uint64) error {
@@ -227,6 +232,7 @@ func (s *Service) Like(ctx context.Context, videoID uint64, userID uint64) error
 		}
 		return err
 	}
+	s.invalidateVideoCaches(ctx, videoID)
 	return nil
 }
 
@@ -237,6 +243,7 @@ func (s *Service) Unlike(ctx context.Context, videoID uint64, userID uint64) err
 		}
 		return err
 	}
+	s.invalidateVideoCaches(ctx, videoID)
 	return nil
 }
 
@@ -261,6 +268,7 @@ func (s *Service) Favorite(ctx context.Context, videoID uint64, userID uint64) e
 		}
 		return err
 	}
+	s.invalidateVideoCaches(ctx, videoID)
 	return nil
 }
 
@@ -271,6 +279,7 @@ func (s *Service) Unfavorite(ctx context.Context, videoID uint64, userID uint64)
 		}
 		return err
 	}
+	s.invalidateVideoCaches(ctx, videoID)
 	return nil
 }
 
@@ -343,6 +352,7 @@ func (s *Service) UploadSource(ctx context.Context, videoID uint64, authorID uin
 		}
 		return SourceUploadResponse{}, err
 	}
+	s.invalidateVideoCaches(ctx, videoID)
 
 	return SourceUploadResponse{
 		VideoID:    videoID,
@@ -372,6 +382,7 @@ func (s *Service) UploadCover(ctx context.Context, videoID uint64, authorID uint
 		}
 		return CoverUploadResponse{}, err
 	}
+	s.invalidateVideoCaches(ctx, videoID)
 
 	return CoverUploadResponse{
 		VideoID:  videoID,
@@ -401,8 +412,46 @@ func (s *Service) UpdateVideo(ctx context.Context, videoID uint64, authorID uint
 			return CreatorVideoItem{}, err
 		}
 	}
+	s.invalidateVideoCaches(ctx, videoID)
 
 	return mapCreatorVideoItem(*row), nil
+}
+
+func (s *Service) getCachedDetail(ctx context.Context, videoID uint64) (DetailResponse, bool, error) {
+	if s.cache == nil {
+		return DetailResponse{}, false, nil
+	}
+	return s.cache.GetDetail(ctx, videoID)
+}
+
+func (s *Service) invalidateVideoCaches(ctx context.Context, videoID uint64) {
+	if s.cache == nil {
+		return
+	}
+	_ = s.cache.InvalidateVideo(ctx, videoID)
+	_ = s.cache.InvalidateHotFeed(ctx)
+}
+
+func mapDetailResponse(row videoRow) DetailResponse {
+	return DetailResponse{
+		ID:              row.ID,
+		AreaID:          row.AreaID,
+		Title:           row.Title,
+		Description:     row.Description,
+		CoverURL:        row.CoverURL,
+		PlayURL:         row.PlayURL,
+		DurationSeconds: row.DurationSeconds,
+		ViewCount:       row.ViewCount,
+		CommentCount:    row.CommentCount,
+		LikeCount:       row.LikeCount,
+		FavoriteCount:   row.FavoriteCount,
+		PublishedAt:     row.PublishedAt,
+		Author: AuthorPreview{
+			ID:        row.AuthorID,
+			Username:  row.AuthorUsername,
+			AvatarURL: row.AuthorAvatarURL,
+		},
+	}
 }
 
 func (s *Service) ListCreatorVideos(ctx context.Context, authorID uint64, reviewStatus string, page int, pageSize int) (CreatorVideoListResponse, error) {

@@ -17,6 +17,7 @@ type Repository struct {
 }
 
 type row struct {
+	VideoID       uint64    `gorm:"column:video_id"`
 	ID            uint64    `gorm:"column:id"`
 	RootID        uint64    `gorm:"column:root_id"`
 	ParentID      uint64    `gorm:"column:parent_id"`
@@ -271,6 +272,7 @@ func (r *Repository) listRows(ctx context.Context, query *gorm.DB, page int, pag
 	var rows []row
 	base := query.
 		Select(`
+			comments.video_id,
 			comments.id,
 			comments.root_id,
 			comments.parent_id,

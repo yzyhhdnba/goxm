@@ -916,7 +916,7 @@ func newTestApp(t *testing.T) (stdhttp.Handler, *gorm.DB) {
 		},
 	}
 
-	return apphttp.NewRouter(cfg, db, nil), db
+	return apphttp.NewRouter(cfg, db, nil, nil), db
 }
 
 func performJSONRequest(t *testing.T, router stdhttp.Handler, method string, path string, body any, bearerToken string) *httptest.ResponseRecorder {

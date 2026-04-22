@@ -105,7 +105,7 @@
 
 - Redis
 - Feed / 热榜
-- RabbitMQ / Worker
+- RocketMQ / Worker
 - 媒体转码
 - Docker Compose 全链路
 
@@ -478,8 +478,8 @@
 
 - [x] 接入 Redis 基础客户端
 - [ ] 设计 token 相关 key
-- [ ] 为视频详情增加缓存
-- [ ] 为热门榜增加缓存
+- [x] 为视频详情增加缓存
+- [x] 为热门榜增加缓存
 
 验收标准：
 
@@ -508,10 +508,10 @@
 
 - 播放链路从“静态文件上传”升级到“可标准播放的媒体资源”
 
-## Epic 4.5 RabbitMQ 与 Worker
+## Epic 4.5 RocketMQ 与 Worker
 
-- [ ] 初始化 `cmd/worker`
-- [ ] 接入 RabbitMQ
+- [x] 初始化 `cmd/worker`
+- [ ] 接入 RocketMQ
 - [ ] 设计第一批事件
 - [ ] 把转码任务异步化
 - [ ] 把通知生成异步化
@@ -528,7 +528,7 @@
 - [ ] 增加 `redis`
 - [ ] 增加 `backend`
 - [ ] 增加 `frontend`
-- [ ] 第二阶段加入 `rabbitmq`
+- [ ] 第二阶段加入 `rocketmq`
 - [ ] 编写启动说明
 
 验收标准：

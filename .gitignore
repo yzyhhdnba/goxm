@@ -1,6 +1,7 @@
 .DS_Store
 .idea/
 .vscode/
+.claude/
 
 # Root logs
 *.log
@@ -8,6 +9,8 @@
 # Frontend dependencies and build outputs
 frontend/node_modules/
 frontend/dist/
+frontend1/node_modules/
+frontend1/dist/
 backend/frontend/node_modules/
 backend/frontend/dist/
 

@@ -20,11 +20,20 @@ var (
 )
 
 type Service struct {
-	repo *Repository
+	repo             *Repository
+	cacheInvalidator cacheInvalidator
 }
 
-func NewService(repo *Repository) *Service {
-	return &Service{repo: repo}
+type cacheInvalidator interface {
+	InvalidateVideo(ctx context.Context, videoID uint64) error
+	InvalidateHotFeed(ctx context.Context) error
+}
+
+func NewService(repo *Repository, cacheInvalidator cacheInvalidator) *Service {
+	return &Service{
+		repo:             repo,
+		cacheInvalidator: cacheInvalidator,
+	}
 }
 
 func (s *Service) ListComments(ctx context.Context, videoID uint64, page int, pageSize int, viewerID uint64) (ListResponse, error) {
@@ -53,6 +62,7 @@ func (s *Service) CreateComment(ctx context.Context, videoID uint64, userID uint
 		}
 		return Item{}, err
 	}
+	s.invalidateVideoCaches(ctx, videoID)
 
 	return mapItem(*row, false), nil
 }
@@ -83,6 +93,7 @@ func (s *Service) CreateReply(ctx context.Context, commentID uint64, userID uint
 		}
 		return Item{}, err
 	}
+	s.invalidateVideoCaches(ctx, row.VideoID)
 
 	return mapItem(*row, false), nil
 }
@@ -171,4 +182,12 @@ func mapItem(source row, liked bool) Item {
 			Liked: liked,
 		},
 	}
+}
+
+func (s *Service) invalidateVideoCaches(ctx context.Context, videoID uint64) {
+	if s.cacheInvalidator == nil || videoID == 0 {
+		return
+	}
+	_ = s.cacheInvalidator.InvalidateVideo(ctx, videoID)
+	_ = s.cacheInvalidator.InvalidateHotFeed(ctx)
 }
